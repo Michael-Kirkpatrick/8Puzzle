@@ -33,11 +33,11 @@ public class Node {
         }
 
         // If the compared object isn't even a Node, then that will be false by default.
-        if (!(o instanceof Node n)) {
+        if (!(o instanceof Node)) {
             return false;
         }
 
-        return Arrays.equals(state, n.state);
+        return Arrays.equals(state, ((Node)o).state);
     }
 
     public Node getParent() {
