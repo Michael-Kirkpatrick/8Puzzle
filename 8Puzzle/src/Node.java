@@ -2,13 +2,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Node {
-    public static final int STATE_SIZE = 9;
+    public static final int STATE_SIZE = 9; // Length of state array, 9 integers to represent 3x3 puzzle.
 
     private final int[] state;
     private final Node parent;
-    private ArrayList<Node> children;
-    private final Relation relationToParent;
-    private final int zeroPosition;
+    private final ArrayList<Node> children;
+    private final Relation relationToParent; // The move made from the parent Node's state to achieve this Node's state.
+    private final int zeroPosition; // The index of the zero in the state array, which represents the empty square.
 
 
     // Creates node given puzzle state. State must be exactly a length of 9.
@@ -18,7 +18,7 @@ public class Node {
         }
         this.state = state;
         this.parent = parent;
-        this.children = new ArrayList<Node>();
+        this.children = new ArrayList<>();
         this.relationToParent = relationToParent;
         this.zeroPosition = getZeroPosition();
     }
@@ -37,6 +37,7 @@ public class Node {
             return false;
         }
 
+        // If we are comparing to another Node, then compare solely on the value of the state to determine equality.
         return Arrays.equals(state, ((Node)o).state);
     }
 
@@ -53,11 +54,14 @@ public class Node {
     }
 
     // Create all child nodes possible to be obtained from this state and return them.
+    // Child nodes are not created until requested so as to preserve memory space.
     public ArrayList<Node> getChildren() {
         createChildren();
         return children;
     }
 
+    // Create all child nodes possible from this Node's current state. This requires checking if each of the four
+    // possible moves are possible in this state: LEFT, RIGHT, UP, DOWN
     private void createChildren() {
         // Check if it is possible to move the empty square left, and add that child if possible.
         if (!(zeroPosition == 0 || zeroPosition == 3 || zeroPosition == 6)) {
@@ -80,6 +84,8 @@ public class Node {
         }
     }
 
+    // Create the child node as given by the relation argument. I.e., if relation is UP, then create a Node whose
+    // state is that of the current Node's after an UP move has been made.
     private void createChild(Relation relation) {
         int offset = switch (relation) {
             case LEFT -> -1;
@@ -98,6 +104,7 @@ public class Node {
         children.add(child);
     }
 
+    // Find the index of the zero (empty space) in the current Node's state.
     private int getZeroPosition() {
         for (int i = 0; i < state.length; i++) {
             if (state[i] == 0) {
